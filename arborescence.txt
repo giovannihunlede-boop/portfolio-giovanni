@@ -1,0 +1,17 @@
+src
+├── App.tsx
+├── assets
+│   └── giovanni.png
+├── components
+│   ├── CalculatorDemo.tsx
+│   ├── ContactForm.tsx
+│   ├── FlowNoteDemo.tsx
+│   ├── Modal.tsx
+│   ├── SnakeGameDemo.tsx
+│   └── TaskManagerDemo.tsx
+├── main.tsx
+├── styles
+│   └── globals.css
+└── vite-env.d.ts
+
+4 directories, 11 files

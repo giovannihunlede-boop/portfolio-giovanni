@@ -1,0 +1,956 @@
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<HEAD>
+<TITLE>Enscript Output</TITLE>
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#1F00FF" ALINK="#FF0000" VLINK="#9900DD">
+<A NAME="top">
+<A NAME="file1">
+<H1>src/components/CalculatorDemo.tsx 1/6</H1>
+[<A HREF="#top">top</A>][prev][<A HREF="#file2">next</A>]
+<PRE>
+import React, { useState } from 'react'
+
+interface CalculatorDemoProps {
+  isOpen: boolean
+  onClose: () =&gt; void
+}
+
+const CalculatorDemo: React.FC&lt;CalculatorDemoProps&gt; = ({ isOpen, onClose }) =&gt; {
+  const [display, setDisplay] = useState('0')
+  const [result, setResult] = useState(0)
+  const [operator, setOperator] = useState&lt;string | null&gt;(null)
+  const [input, setInput] = useState('')
+
+  const handleInput = (val: string) =&gt; {
+    if (val === '=') {
+      if (operator &amp;&amp; input) {
+        const calcResult = evaluate(result, operator, parseFloat(input))
+        setDisplay(calcResult.toString())
+        setResult(calcResult)
+        setInput('')
+        setOperator(null)
+      }
+    } else if (['+', '-', '*', '/'].includes(val)) {
+      if (input) {
+        setResult(parseFloat(input))
+      } else {
+        setResult(result)
+      }
+      setOperator(val)
+      setInput('')
+    } else {
+      setInput(input + val)
+      setDisplay(input + val)
+    }
+  }
+
+  const evaluate = (left: number, op: string, right: number): number =&gt; {
+    switch (op) {
+      case '+':
+        return left + right
+      case '-':
+        return left - right
+      case '*':
+        return left * right
+      case '/':
+        return right !== 0 ? left / right : 0
+      default:
+        return right
+    }
+  }
+
+  const handleClear = () =&gt; {
+    setDisplay('0')
+    setResult(0)
+    setOperator(null)
+    setInput('')
+  }
+
+  const buttons = [7, 8, 9, '/', 4, 5, 6, '*', 1, 2, 3, '-', 0, '.', '=', '+']
+
+  return (
+    &lt;div className={`demo-modal ${isOpen ? 'open' : ''}`} onClick={(e) =&gt; e.target === e.currentTarget &amp;&amp; onClose()}&gt;
+      &lt;div className=&quot;demo-modal-content&quot;&gt;
+        &lt;button className=&quot;demo-close&quot; onClick={onClose}&gt;
+          &amp;times;
+        &lt;/button&gt;
+
+        &lt;div className=&quot;demo-container&quot;&gt;
+          &lt;header className=&quot;demo-header&quot;&gt;
+            &lt;h1&gt;🧮 Calculatrice Scientifique&lt;/h1&gt;
+            &lt;p&gt;Opérations avancées intégrées&lt;/p&gt;
+          &lt;/header&gt;
+
+          &lt;main className=&quot;demo-main&quot; style={{ textAlign: 'center', padding: '20px' }}&gt;
+            &lt;div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,0,110,0.2)', borderRadius: '15px', padding: '15px' }}&gt;
+              &lt;input
+                type=&quot;text&quot;
+                readOnly
+                value={display}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  background: 'rgba(0,0,0,0.3)',
+                  border: '1px solid rgba(255,0,110,0.3)',
+                  borderRadius: '8px',
+                  color: '#ff006e',
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold',
+                  marginBottom: '12px',
+                  textAlign: 'right',
+                }}
+              /&gt;
+              &lt;div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '12px' }}&gt;
+                {buttons.map((btn) =&gt; (
+                  &lt;button
+                    key={btn}
+                    onClick={() =&gt; handleInput(btn.toString())}
+                    style={{
+                      padding: '14px',
+                      background: ['/', '+', '-', '*', '='].includes(btn.toString())
+                        ? 'rgba(255,0,110,0.2)'
+                        : 'rgba(99,102,241,0.2)',
+                      border: '1px solid rgba(255,0,110,0.3)',
+                      borderRadius: '8px',
+                      color: 'white',
+                      fontWeight: 'bold',
+                      fontSize: '1.1rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) =&gt; {
+                      (e.target as HTMLElement).style.background = 'rgba(255,0,110,0.3)'
+                      ;(e.target as HTMLElement).style.transform = 'scale(1.05)'
+                    }}
+                    onMouseLeave={(e) =&gt; {
+                      (e.target as HTMLElement).style.background = ['/', '+', '-', '*', '='].includes(btn.toString())
+                        ? 'rgba(255,0,110,0.2)'
+                        : 'rgba(99,102,241,0.2)'
+                      ;(e.target as HTMLElement).style.transform = 'scale(1)'
+                    }}
+                  &gt;
+                    {btn}
+                  &lt;/button&gt;
+                ))}
+              &lt;/div&gt;
+              &lt;button
+                onClick={handleClear}
+                style={{
+                  width: '100%',
+                  padding: '14px',
+                  background: 'rgba(239,68,68,0.2)',
+                  border: '1px solid rgba(239,68,68,0.3)',
+                  borderRadius: '8px',
+                  color: '#ef4444',
+                  fontWeight: 'bold',
+                  fontSize: '1.1rem',
+                  cursor: 'pointer',
+                }}
+              &gt;
+                C
+              &lt;/button&gt;
+            &lt;/div&gt;
+          &lt;/main&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  )
+}
+
+export default CalculatorDemo
+</PRE>
+<HR>
+<A NAME="file2">
+<H1>src/components/ContactForm.tsx 2/6</H1>
+[<A HREF="#top">top</A>][<A HREF="#file1">prev</A>][<A HREF="#file3">next</A>]
+<PRE>
+import React, { useState } from 'react'
+
+const ContactForm: React.FC = () =&gt; {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState&lt;'idle' | 'success' | 'error'&gt;('idle')
+  const [statusMessage, setStatusMessage] = useState('')
+
+  // Replace with your actual Formspree ID
+  const FORMSPREE_ID = 'f/YOUR_FORMSPREE_ID' // You need to update this
+
+  const handleSubmit = async (e: React.FormEvent) =&gt; {
+    e.preventDefault()
+    setLoading(true)
+    setStatus('idle')
+
+    try {
+      const response = await fetch(`https://formspree.io/${FORMSPREE_ID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+        }),
+      })
+
+      if (response.ok) {
+        setStatus('success')
+        setStatusMessage('✅ Message envoyé avec succès! Merci de nous avoir contacté.')
+        setName('')
+        setEmail('')
+        setMessage('')
+      } else {
+        setStatus('error')
+        setStatusMessage('❌ Erreur lors de l\'envoi du message. Veuillez réessayer.')
+      }
+    } catch (error) {
+      setStatus('error')
+      setStatusMessage('❌ Erreur de connexion. Veuillez vérifier votre connexion Internet.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    &lt;section id=&quot;contact&quot; className=&quot;section contact&quot;&gt;
+      &lt;h2&gt;Discutons de votre projet&lt;/h2&gt;
+
+      &lt;div className=&quot;contact-container&quot;&gt;
+        {/* Bloc Informations (Gauche) */}
+        &lt;div className=&quot;contact-info&quot;&gt;
+          &lt;h3&gt;Contactez-moi&lt;/h3&gt;
+          &lt;p&gt;
+            Vous avez une idée en tête ou besoin d&amp;apos;un développeur pour votre équipe ? N&amp;apos;hésitez pas à
+            m&amp;apos;envoyer un message.
+          &lt;/p&gt;
+
+          &lt;div className=&quot;info-item&quot;&gt;
+            &lt;span className=&quot;icon&quot;&gt;📧&lt;/span&gt;
+            &lt;div className=&quot;info-text&quot;&gt;
+              &lt;h4&gt;Email&lt;/h4&gt;
+              &lt;p&gt;giovannihunlede@gmail.com&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div className=&quot;info-item&quot;&gt;
+            &lt;span className=&quot;icon&quot;&gt;📍&lt;/span&gt;
+            &lt;div className=&quot;info-text&quot;&gt;
+              &lt;h4&gt;Localisation&lt;/h4&gt;
+              &lt;p&gt;Lomé TOGO&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        {/* Formulaire (Droite) */}
+        &lt;form className=&quot;contact-form&quot; onSubmit={handleSubmit}&gt;
+          {status !== 'idle' &amp;&amp; (
+            &lt;div className={`form-status form-status-${status}`}&gt;
+              {statusMessage}
+            &lt;/div&gt;
+          )}
+
+          &lt;div className=&quot;input-group&quot;&gt;
+            &lt;input
+              type=&quot;text&quot;
+              id=&quot;name&quot;
+              value={name}
+              onChange={(e) =&gt; setName(e.target.value)}
+              required
+              placeholder=&quot; &quot;
+            /&gt;
+            &lt;label htmlFor=&quot;name&quot;&gt;Votre Nom&lt;/label&gt;
+          &lt;/div&gt;
+
+          &lt;div className=&quot;input-group&quot;&gt;
+            &lt;input
+              type=&quot;email&quot;
+              id=&quot;email&quot;
+              value={email}
+              onChange={(e) =&gt; setEmail(e.target.value)}
+              required
+              placeholder=&quot; &quot;
+            /&gt;
+            &lt;label htmlFor=&quot;email&quot;&gt;Votre Email&lt;/label&gt;
+          &lt;/div&gt;
+
+          &lt;div className=&quot;input-group&quot;&gt;
+            &lt;textarea
+              id=&quot;message&quot;
+              value={message}
+              onChange={(e) =&gt; setMessage(e.target.value)}
+              rows={5}
+              required
+              placeholder=&quot; &quot;
+            &gt;&lt;/textarea&gt;
+            &lt;label htmlFor=&quot;message&quot;&gt;Votre Message&lt;/label&gt;
+          &lt;/div&gt;
+
+          &lt;button type=&quot;submit&quot; className=&quot;btn-submit&quot; disabled={loading}&gt;
+            {loading ? 'Envoi en cours...' : 'Envoyer le message'} &lt;span&gt;🚀&lt;/span&gt;
+          &lt;/button&gt;
+        &lt;/form&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  )
+}
+
+export default ContactForm
+</PRE>
+<HR>
+<A NAME="file3">
+<H1>src/components/FlowNoteDemo.tsx 3/6</H1>
+[<A HREF="#top">top</A>][<A HREF="#file2">prev</A>][<A HREF="#file4">next</A>]
+<PRE>
+import React, { useState, useEffect } from 'react'
+
+interface Note {
+  id: number
+  title: string
+  content: string
+  category: string
+  date: string
+  time: string
+}
+
+interface FlowNoteDemoProps {
+  isOpen: boolean
+  onClose: () =&gt; void
+}
+
+const FlowNoteDemo: React.FC&lt;FlowNoteDemoProps&gt; = ({ isOpen, onClose }) =&gt; {
+  const [notes, setNotes] = useState&lt;Note[]&gt;([])
+  const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
+  const [category, setCategory] = useState('general')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('all')
+
+  // Load notes from localStorage
+  useEffect(() =&gt; {
+    const stored = localStorage.getItem('demoFlowNotes')
+    if (stored) {
+      setNotes(JSON.parse(stored))
+    }
+  }, [])
+
+  // Save notes to localStorage
+  const saveNotes = (newNotes: Note[]) =&gt; {
+    setNotes(newNotes)
+    localStorage.setItem('demoFlowNotes', JSON.stringify(newNotes))
+  }
+
+  const addNote = () =&gt; {
+    if (!title.trim() || !content.trim()) {
+      alert('Veuillez remplir le titre et le contenu!')
+      return
+    }
+
+    const newNote: Note = {
+      id: Date.now(),
+      title,
+      content,
+      category,
+      date: new Date().toLocaleDateString('fr-FR'),
+      time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+    }
+
+    saveNotes([newNote, ...notes])
+    setTitle('')
+    setContent('')
+  }
+
+  const deleteNote = (id: number) =&gt; {
+    if (confirm('Êtes-vous sûr?')) {
+      saveNotes(notes.filter((note) =&gt; note.id !== id))
+    }
+  }
+
+  const editNote = (id: number) =&gt; {
+    const note = notes.find((n) =&gt; n.id === id)
+    if (note) {
+      setTitle(note.title)
+      setContent(note.content)
+      setCategory(note.category)
+      deleteNote(id)
+    }
+  }
+
+  const getCategoryColor = (cat: string) =&gt; {
+    const colors: { [key: string]: string } = {
+      work: '#FF6B6B',
+      personal: '#4ECDC4',
+      ideas: '#FFE66D',
+      important: '#95E1D3',
+      general: '#99D8FF',
+    }
+    return colors[cat] || '#99D8FF'
+  }
+
+  const escapeHtml = (text: string) =&gt; {
+    const div = document.createElement('div')
+    div.textContent = text
+    return div.innerHTML
+  }
+
+  const filteredNotes = notes.filter((note) =&gt; {
+    const matchesSearch =
+      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      note.content.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesCategory = selectedCategory === 'all' || note.category === selectedCategory
+    return matchesSearch &amp;&amp; matchesCategory
+  })
+
+  return (
+    &lt;div className={`demo-modal ${isOpen ? 'open' : ''}`} onClick={(e) =&gt; e.target === e.currentTarget &amp;&amp; onClose()}&gt;
+      &lt;div className=&quot;demo-modal-content&quot;&gt;
+        &lt;button className=&quot;demo-close&quot; onClick={onClose}&gt;
+          &amp;times;
+        &lt;/button&gt;
+
+        &lt;div className=&quot;demo-container&quot;&gt;
+          &lt;header className=&quot;demo-header&quot;&gt;
+            &lt;h1&gt;📝 FlowNote - Démo Interactive&lt;/h1&gt;
+            &lt;p&gt;Testez l&amp;apos;app directement! Vos notes sont sauvegardées localement.&lt;/p&gt;
+          &lt;/header&gt;
+
+          &lt;main className=&quot;demo-main&quot;&gt;
+            &lt;div className=&quot;demo-input-section&quot;&gt;
+              &lt;div className=&quot;demo-input-group&quot;&gt;
+                &lt;input
+                  type=&quot;text&quot;
+                  value={title}
+                  onChange={(e) =&gt; setTitle(e.target.value)}
+                  onKeyPress={(e) =&gt; e.key === 'Enter' &amp;&amp; addNote()}
+                  placeholder=&quot;Titre de votre note...&quot;
+                /&gt;
+                &lt;textarea
+                  value={content}
+                  onChange={(e) =&gt; setContent(e.target.value)}
+                  onKeyPress={(e) =&gt; e.ctrlKey &amp;&amp; e.key === 'Enter' &amp;&amp; addNote()}
+                  placeholder=&quot;Contenu de votre note...&quot;
+                &gt;&lt;/textarea&gt;
+                &lt;div className=&quot;demo-form-row&quot;&gt;
+                  &lt;select value={category} onChange={(e) =&gt; setCategory(e.target.value)} className=&quot;demo-category-select&quot;&gt;
+                    &lt;option value=&quot;general&quot;&gt;📌 General&lt;/option&gt;
+                    &lt;option value=&quot;work&quot;&gt;💼 Travail&lt;/option&gt;
+                    &lt;option value=&quot;personal&quot;&gt;👤 Personnel&lt;/option&gt;
+                    &lt;option value=&quot;ideas&quot;&gt;💡 Idées&lt;/option&gt;
+                    &lt;option value=&quot;important&quot;&gt;⭐ Important&lt;/option&gt;
+                  &lt;/select&gt;
+                  &lt;button className=&quot;demo-btn-add&quot; onClick={addNote}&gt;
+                    ➕ Ajouter
+                  &lt;/button&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div className=&quot;demo-search-section&quot;&gt;
+              &lt;input
+                type=&quot;text&quot;
+                value={searchQuery}
+                onChange={(e) =&gt; setSearchQuery(e.target.value)}
+                placeholder=&quot;🔍 Rechercher...&quot;
+                className=&quot;demo-search-input&quot;
+              /&gt;
+              &lt;select
+                value={selectedCategory}
+                onChange={(e) =&gt; setSelectedCategory(e.target.value)}
+                className=&quot;demo-category-select&quot;
+              &gt;
+                &lt;option value=&quot;all&quot;&gt;Toutes catégories&lt;/option&gt;
+                &lt;option value=&quot;general&quot;&gt;📌 General&lt;/option&gt;
+                &lt;option value=&quot;work&quot;&gt;💼 Travail&lt;/option&gt;
+                &lt;option value=&quot;personal&quot;&gt;👤 Personnel&lt;/option&gt;
+                &lt;option value=&quot;ideas&quot;&gt;💡 Idées&lt;/option&gt;
+                &lt;option value=&quot;important&quot;&gt;⭐ Important&lt;/option&gt;
+              &lt;/select&gt;
+              &lt;div className=&quot;demo-note-stats&quot;&gt;
+                &lt;span&gt;📝 Total: {notes.length}&lt;/span&gt;
+                &lt;span&gt;🔍 Affichées: {filteredNotes.length}&lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div className=&quot;demo-notes-section&quot;&gt;
+              &lt;h2&gt;Vos Notes&lt;/h2&gt;
+              &lt;div className=&quot;demo-notes-grid&quot;&gt;
+                {filteredNotes.length === 0 ? (
+                  &lt;div className=&quot;demo-empty-state&quot;&gt;
+                    &lt;h3&gt;{searchQuery ? '❌ Aucune note trouvée' : '📭 Aucune note'}&lt;/h3&gt;
+                  &lt;/div&gt;
+                ) : (
+                  filteredNotes.map((note) =&gt; (
+                    &lt;div
+                      key={note.id}
+                      className=&quot;demo-note-card&quot;
+                      style={{ borderLeftColor: getCategoryColor(note.category) }}
+                    &gt;
+                      &lt;div className=&quot;demo-note-header&quot;&gt;
+                        &lt;h3&gt;{escapeHtml(note.title)}&lt;/h3&gt;
+                        &lt;span className=&quot;demo-note-category&quot; style={{ backgroundColor: getCategoryColor(note.category) }}&gt;
+                          {note.category}
+                        &lt;/span&gt;
+                      &lt;/div&gt;
+                      &lt;p&gt;{escapeHtml(note.content)}&lt;/p&gt;
+                      &lt;div className=&quot;demo-note-meta&quot;&gt;
+                        &lt;small&gt;
+                          📅 {note.date} · 🕐 {note.time}
+                        &lt;/small&gt;
+                      &lt;/div&gt;
+                      &lt;div className=&quot;demo-note-actions&quot;&gt;
+                        &lt;button className=&quot;demo-btn-edit&quot; onClick={() =&gt; editNote(note.id)}&gt;
+                          ✏️
+                        &lt;/button&gt;
+                        &lt;button className=&quot;demo-btn-delete&quot; onClick={() =&gt; deleteNote(note.id)}&gt;
+                          🗑️
+                        &lt;/button&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  ))
+                )}
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/main&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  )
+}
+
+export default FlowNoteDemo
+</PRE>
+<HR>
+<A NAME="file4">
+<H1>src/components/Modal.tsx 4/6</H1>
+[<A HREF="#top">top</A>][<A HREF="#file3">prev</A>][<A HREF="#file5">next</A>]
+<PRE>
+import React, { useEffect } from 'react'
+
+interface ModalProps {
+  id: string
+  isOpen: boolean
+  onClose: () =&gt; void
+  title: string
+  children: React.ReactNode
+}
+
+const Modal: React.FC&lt;ModalProps&gt; = ({ id, isOpen, onClose, title, children }) =&gt; {
+  useEffect(() =&gt; {
+    const handleKeyDown = (e: KeyboardEvent) =&gt; {
+      if (e.key === 'Escape' &amp;&amp; isOpen) {
+        onClose()
+      }
+    }
+
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+      document.addEventListener('keydown', handleKeyDown)
+    }
+
+    return () =&gt; {
+      document.body.style.overflow = ''
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, onClose])
+
+  const handleBackdropClick = (e: React.MouseEvent) =&gt; {
+    if (e.target === e.currentTarget) {
+      onClose()
+    }
+  }
+
+  return (
+    &lt;div
+      id={id}
+      className={`demo-modal ${isOpen ? 'open' : ''}`}
+      onClick={handleBackdropClick}
+    &gt;
+      &lt;div className=&quot;demo-modal-content&quot;&gt;
+        &lt;button className=&quot;demo-close&quot; onClick={onClose}&gt;
+          &amp;times;
+        &lt;/button&gt;
+
+        &lt;div className=&quot;demo-container&quot;&gt;
+          &lt;header className=&quot;demo-header&quot;&gt;
+            &lt;h1&gt;{title}&lt;/h1&gt;
+          &lt;/header&gt;
+
+          &lt;main className=&quot;demo-main&quot;&gt;{children}&lt;/main&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  )
+}
+
+export default Modal
+</PRE>
+<HR>
+<A NAME="file5">
+<H1>src/components/SnakeGameDemo.tsx 5/6</H1>
+[<A HREF="#top">top</A>][<A HREF="#file4">prev</A>][<A HREF="#file6">next</A>]
+<PRE>
+import React, { useState, useEffect, useRef } from 'react'
+
+interface SnakeGameDemoProps {
+  isOpen: boolean
+  onClose: () =&gt; void
+}
+
+const SnakeGameDemo: React.FC&lt;SnakeGameDemoProps&gt; = ({ isOpen, onClose }) =&gt; {
+  const canvasRef = useRef&lt;HTMLCanvasElement&gt;(null)
+  const [score, setScore] = useState(0)
+  const [gameOver, setGameOver] = useState(false)
+  const [gameStarted, setGameStarted] = useState(false)
+
+  const gameStateRef = useRef({
+    snake: [{ x: 6, y: 6 }],
+    direction: { x: 1, y: 0 },
+    nextDir: { x: 1, y: 0 },
+    food: { x: Math.floor(Math.random() * 12), y: Math.floor(Math.random() * 12) },
+    score: 0,
+    gameOver: false,
+    width: 12,
+    height: 12,
+    cellSize: 30,
+  })
+
+  useEffect(() =&gt; {
+    if (!isOpen || !gameStarted) return
+
+    const handleKeyDown = (e: KeyboardEvent) =&gt; {
+      const state = gameStateRef.current
+      const key = e.key
+
+      if (key === 'ArrowUp' &amp;&amp; state.direction.y === 0) {
+        state.nextDir = { x: 0, y: -1 }
+        e.preventDefault()
+      } else if (key === 'ArrowDown' &amp;&amp; state.direction.y === 0) {
+        state.nextDir = { x: 0, y: 1 }
+        e.preventDefault()
+      } else if (key === 'ArrowLeft' &amp;&amp; state.direction.x === 0) {
+        state.nextDir = { x: -1, y: 0 }
+        e.preventDefault()
+      } else if (key === 'ArrowRight' &amp;&amp; state.direction.x === 0) {
+        state.nextDir = { x: 1, y: 0 }
+        e.preventDefault()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () =&gt; document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, gameStarted])
+
+  useEffect(() =&gt; {
+    if (!isOpen || !gameStarted || gameOver) return
+
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const state = gameStateRef.current
+
+    const gameLoop = setInterval(() =&gt; {
+      // Update
+      state.direction = state.nextDir
+      const head = {
+        x: state.snake[0].x + state.direction.x,
+        y: state.snake[0].y + state.direction.y,
+      }
+
+      // Check collisions
+      if (head.x &lt; 0 || head.x &gt;= state.width || head.y &lt; 0 || head.y &gt;= state.height) {
+        setGameOver(true)
+        clearInterval(gameLoop)
+        return
+      }
+
+      if (state.snake.some((s) =&gt; s.x === head.x &amp;&amp; s.y === head.y)) {
+        setGameOver(true)
+        clearInterval(gameLoop)
+        return
+      }
+
+      state.snake.unshift(head)
+
+      if (head.x === state.food.x &amp;&amp; head.y === state.food.y) {
+        state.score += 10
+        setScore(state.score)
+        state.food = {
+          x: Math.floor(Math.random() * state.width),
+          y: Math.floor(Math.random() * state.height),
+        }
+      } else {
+        state.snake.pop()
+      }
+
+      // Draw
+      ctx.fillStyle = '#0a0e27'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+      ctx.fillStyle = '#00d9ff'
+      state.snake.forEach((s) =&gt; {
+        ctx.fillRect(s.x * state.cellSize, s.y * state.cellSize, state.cellSize - 1, state.cellSize - 1)
+      })
+
+      ctx.fillStyle = '#ff006e'
+      ctx.fillRect(state.food.x * state.cellSize, state.food.y * state.cellSize, state.cellSize - 1, state.cellSize - 1)
+    }, 150)
+
+    return () =&gt; clearInterval(gameLoop)
+  }, [isOpen, gameStarted, gameOver])
+
+  const startGame = () =&gt; {
+    setGameStarted(true)
+    setGameOver(false)
+    setScore(0)
+    gameStateRef.current = {
+      snake: [{ x: 6, y: 6 }],
+      direction: { x: 1, y: 0 },
+      nextDir: { x: 1, y: 0 },
+      food: { x: Math.floor(Math.random() * 12), y: Math.floor(Math.random() * 12) },
+      score: 0,
+      gameOver: false,
+      width: 12,
+      height: 12,
+      cellSize: 30,
+    }
+  }
+
+  return (
+    &lt;div className={`demo-modal ${isOpen ? 'open' : ''}`} onClick={(e) =&gt; e.target === e.currentTarget &amp;&amp; onClose()}&gt;
+      &lt;div className=&quot;demo-modal-content&quot;&gt;
+        &lt;button className=&quot;demo-close&quot; onClick={onClose}&gt;
+          &amp;times;
+        &lt;/button&gt;
+
+        &lt;div className=&quot;demo-container&quot;&gt;
+          &lt;header className=&quot;demo-header&quot;&gt;
+            &lt;h1&gt;🐍 Snake Game - Démo Interactive&lt;/h1&gt;
+            &lt;p&gt;Utilisez les flèches pour contrôler le serpent!&lt;/p&gt;
+          &lt;/header&gt;
+
+          &lt;main className=&quot;demo-main&quot; style={{ textAlign: 'center', padding: '20px' }}&gt;
+            {!gameStarted ? (
+              &lt;button
+                onClick={startGame}
+                style={{
+                  padding: '14px 28px',
+                  background: 'linear-gradient(135deg, #ff006e 0%, #00d9ff 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontWeight: '700',
+                  fontSize: '1.1rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  marginBottom: '20px',
+                }}
+                onMouseEnter={(e) =&gt; ((e.target as HTMLElement).style.transform = 'translateY(-2px)')}
+                onMouseLeave={(e) =&gt; ((e.target as HTMLElement).style.transform = 'translateY(0)')}
+              &gt;
+                🎮 Démarrer le jeu
+              &lt;/button&gt;
+            ) : (
+              &lt;&gt;
+                &lt;canvas
+                  ref={canvasRef}
+                  width={12 * 30}
+                  height={12 * 30}
+                  style={{
+                    border: '2px solid #ff006e',
+                    backgroundColor: '#0a0e27',
+                    marginBottom: '20px',
+                    borderRadius: '12px',
+                  }}
+                /&gt;
+                &lt;div style={{ color: '#ff006e', fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '20px' }}&gt;
+                  {gameOver ? `🎮 Game Over! Score: ${score}` : `Score: ${score}`}
+                &lt;/div&gt;
+                {gameOver &amp;&amp; (
+                  &lt;button
+                    onClick={startGame}
+                    style={{
+                      padding: '12px 24px',
+                      background: 'linear-gradient(135deg, #ff006e 0%, #00d9ff 100%)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                    }}
+                  &gt;
+                    🔄 Rejouer
+                  &lt;/button&gt;
+                )}
+              &lt;/&gt;
+            )}
+          &lt;/main&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  )
+}
+
+export default SnakeGameDemo
+</PRE>
+<HR>
+<A NAME="file6">
+<H1>src/components/TaskManagerDemo.tsx 6/6</H1>
+[<A HREF="#top">top</A>][<A HREF="#file5">prev</A>][next]
+<PRE>
+import React, { useState, useEffect } from 'react'
+
+interface Task {
+  id: number
+  title: string
+  desc: string
+  priority: 'low' | 'medium' | 'high'
+  completed: boolean
+}
+
+interface TaskManagerDemoProps {
+  isOpen: boolean
+  onClose: () =&gt; void
+}
+
+const TaskManagerDemo: React.FC&lt;TaskManagerDemoProps&gt; = ({ isOpen, onClose }) =&gt; {
+  const [tasks, setTasks] = useState&lt;Task[]&gt;([])
+  const [title, setTitle] = useState('')
+  const [desc, setDesc] = useState('')
+  const [priority, setPriority] = useState&lt;'low' | 'medium' | 'high'&gt;('medium')
+
+  useEffect(() =&gt; {
+    const stored = localStorage.getItem('demoTasks')
+    if (stored) {
+      setTasks(JSON.parse(stored))
+    }
+  }, [])
+
+  const saveTasks = (newTasks: Task[]) =&gt; {
+    setTasks(newTasks)
+    localStorage.setItem('demoTasks', JSON.stringify(newTasks))
+  }
+
+  const addTask = () =&gt; {
+    if (!title.trim()) {
+      alert('Veuillez entrer un titre!')
+      return
+    }
+
+    const newTask: Task = {
+      id: Date.now(),
+      title,
+      desc,
+      priority,
+      completed: false,
+    }
+
+    saveTasks([newTask, ...tasks])
+    setTitle('')
+    setDesc('')
+    setPriority('medium')
+  }
+
+  const toggleTask = (id: number) =&gt; {
+    saveTasks(tasks.map((t) =&gt; (t.id === id ? { ...t, completed: !t.completed } : t)))
+  }
+
+  const deleteTask = (id: number) =&gt; {
+    saveTasks(tasks.filter((t) =&gt; t.id !== id))
+  }
+
+  const colors = { low: '#10b981', medium: '#f59e0b', high: '#ef4444' }
+  const icons = { low: '🟢', medium: '🟡', high: '🔴' }
+
+  return (
+    &lt;div className={`demo-modal ${isOpen ? 'open' : ''}`} onClick={(e) =&gt; e.target === e.currentTarget &amp;&amp; onClose()}&gt;
+      &lt;div className=&quot;demo-modal-content&quot;&gt;
+        &lt;button className=&quot;demo-close&quot; onClick={onClose}&gt;
+          &amp;times;
+        &lt;/button&gt;
+
+        &lt;div className=&quot;demo-container&quot;&gt;
+          &lt;header className=&quot;demo-header&quot;&gt;
+            &lt;h1&gt;📊 TaskManager - Démo Interactive&lt;/h1&gt;
+            &lt;p&gt;Gérez vos tâches avec priorités!&lt;/p&gt;
+          &lt;/header&gt;
+
+          &lt;main className=&quot;demo-main&quot;&gt;
+            &lt;div className=&quot;demo-input-section&quot;&gt;
+              &lt;div className=&quot;demo-input-group&quot;&gt;
+                &lt;input
+                  type=&quot;text&quot;
+                  value={title}
+                  onChange={(e) =&gt; setTitle(e.target.value)}
+                  onKeyPress={(e) =&gt; e.key === 'Enter' &amp;&amp; addTask()}
+                  placeholder=&quot;Titre de la tâche...&quot;
+                /&gt;
+                &lt;textarea
+                  value={desc}
+                  onChange={(e) =&gt; setDesc(e.target.value)}
+                  placeholder=&quot;Description...&quot;
+                &gt;&lt;/textarea&gt;
+                &lt;div className=&quot;demo-form-row&quot;&gt;
+                  &lt;select value={priority} onChange={(e) =&gt; setPriority(e.target.value as any)} className=&quot;demo-category-select&quot;&gt;
+                    &lt;option value=&quot;low&quot;&gt;🟢 Basse&lt;/option&gt;
+                    &lt;option value=&quot;medium&quot;&gt;🟡 Normal&lt;/option&gt;
+                    &lt;option value=&quot;high&quot;&gt;🔴 Haute&lt;/option&gt;
+                  &lt;/select&gt;
+                  &lt;button className=&quot;demo-btn-add&quot; onClick={addTask}&gt;
+                    ➕ Ajouter
+                  &lt;/button&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            &lt;div className=&quot;demo-notes-section&quot;&gt;
+              &lt;h2&gt;Vos Tâches ({tasks.length})&lt;/h2&gt;
+              &lt;div className=&quot;demo-notes-grid&quot;&gt;
+                {tasks.length === 0 ? (
+                  &lt;div className=&quot;demo-empty-state&quot;&gt;
+                    &lt;h3&gt;📭 Aucune tâche&lt;/h3&gt;
+                  &lt;/div&gt;
+                ) : (
+                  tasks.map((task) =&gt; (
+                    &lt;div
+                      key={task.id}
+                      className=&quot;demo-note-card&quot;
+                      style={{ borderLeftColor: colors[task.priority], opacity: task.completed ? 0.5 : 1 }}
+                    &gt;
+                      &lt;div className=&quot;demo-note-header&quot;&gt;
+                        &lt;h3 style={{ textDecoration: task.completed ? 'line-through' : 'none' }}&gt;{task.title}&lt;/h3&gt;
+                        &lt;span className=&quot;demo-note-category&quot; style={{ backgroundColor: colors[task.priority] }}&gt;
+                          {icons[task.priority]} {task.priority}
+                        &lt;/span&gt;
+                      &lt;/div&gt;
+                      &lt;p&gt;{task.desc}&lt;/p&gt;
+                      &lt;div className=&quot;demo-note-actions&quot;&gt;
+                        &lt;button className=&quot;demo-btn-edit&quot; onClick={() =&gt; toggleTask(task.id)} style={{ flex: 1 }}&gt;
+                          {task.completed ? '⏮️' : '✅'}
+                        &lt;/button&gt;
+                        &lt;button className=&quot;demo-btn-delete&quot; onClick={() =&gt; deleteTask(task.id)} style={{ flex: 1 }}&gt;
+                          🗑️
+                        &lt;/button&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  ))
+                )}
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/main&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  )
+}
+
+export default TaskManagerDemo
+</PRE>
+<HR>
+<ADDRESS>Generated by <A HREF="http://www.iki.fi/~mtr/genscript/">GNU Enscript 1.6.5.90</A>.</ADDRESS>
+</BODY>
+</HTML>
