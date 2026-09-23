@@ -1,17 +1,37 @@
-src
-├── App.tsx
-├── assets
-│   └── giovanni.png
-├── components
-│   ├── CalculatorDemo.tsx
-│   ├── ContactForm.tsx
-│   ├── FlowNoteDemo.tsx
-│   ├── Modal.tsx
-│   ├── SnakeGameDemo.tsx
-│   └── TaskManagerDemo.tsx
-├── main.tsx
-├── styles
-│   └── globals.css
-└── vite-env.d.ts
+.
+├── arborescence.txt
+├── documentation.md
+├── index.html
+├── mes_codes_components_tsx.pdf
+├── mes_codes_src_tsx.pdf
+├── mes_codes_styles_css.pdf
+├── package.json
+├── package-lock.json
+├── public
+│   └── images
+│       ├── calculator.png
+│       ├── flownote.png
+│       ├── giovanni.png
+│       ├── snakegame.png
+│       └── taskmanager.png
+├── README.md
+├── sortie.html
+├── src
+│   ├── App.tsx
+│   ├── components
+│   │   ├── CalculatorDemo.tsx
+│   │   ├── ContactForm.tsx
+│   │   ├── FlowNoteDemo.tsx
+│   │   ├── Modal.tsx
+│   │   ├── SnakeGameDemo.tsx
+│   │   └── TaskManagerDemo.tsx
+│   ├── main.tsx
+│   ├── styles
+│   │   └── globals.css
+│   └── vite-env.d.ts
+├── tsconfig.json
+├── tsconfig.node.json
+├── vite.config.ts
+└── vite.svg
 
-4 directories, 11 files
+6 directories, 29 files

@@ -4,47 +4,16 @@ const ContactForm: React.FC = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [statusMessage, setStatusMessage] = useState('')
 
-  // Replace with your actual Formspree ID
-  const FORMSPREE_ID = 'f/YOUR_FORMSPREE_ID' // You need to update this
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    setStatus('idle')
-
-    try {
-      const response = await fetch(`https://formspree.io/${FORMSPREE_ID}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          message,
-        }),
-      })
-
-      if (response.ok) {
-        setStatus('success')
-        setStatusMessage('✅ Message envoyé avec succès! Merci de nous avoir contacté.')
-        setName('')
-        setEmail('')
-        setMessage('')
-      } else {
-        setStatus('error')
-        setStatusMessage('❌ Erreur lors de l\'envoi du message. Veuillez réessayer.')
-      }
-    } catch (error) {
-      setStatus('error')
-      setStatusMessage('❌ Erreur de connexion. Veuillez vérifier votre connexion Internet.')
-    } finally {
-      setLoading(false)
-    }
+    const subject = encodeURIComponent(`Contact portfolio - ${name}`)
+    const body = encodeURIComponent(`Nom : ${name}\nEmail : ${email}\n\n${message}`)
+    window.location.href = `mailto:giovannihunlede@gmail.com?subject=${subject}&body=${body}`
+    setStatus('success')
+    setStatusMessage('Votre messagerie va s’ouvrir pour finaliser l’envoi.')
   }
 
   return (
@@ -56,23 +25,23 @@ const ContactForm: React.FC = () => {
         <div className="contact-info">
           <h3>Contactez-moi</h3>
           <p>
-            Vous avez une idée en tête ou besoin d&apos;un développeur pour votre équipe ? N&apos;hésitez pas à
-            m&apos;envoyer un message.
+            Vous avez une idée en tête, un projet à développer ou besoin d&apos;un développeur pour renforcer votre équipe ? 
+            N&apos;hésitez pas à m&apos;envoyer un message. Je vous répondrai dans les plus brefs délais.
           </p>
 
           <div className="info-item">
-            <span className="icon">📧</span>
+            <span className="icon">✉</span>
             <div className="info-text">
               <h4>Email</h4>
-              <p>giovannihunlede@gmail.com</p>
+              <a href="mailto:giovannihunlede@gmail.com">giovannihunlede@gmail.com</a>
             </div>
           </div>
 
           <div className="info-item">
-            <span className="icon">📍</span>
+            <span className="icon">↗</span>
             <div className="info-text">
-              <h4>Localisation</h4>
-              <p>Lomé TOGO</p>
+              <h4>WhatsApp</h4>
+              <a href="https://wa.me/22899256495" target="_blank" rel="noreferrer">+228 99 25 64 95</a>
             </div>
           </div>
         </div>
@@ -121,8 +90,8 @@ const ContactForm: React.FC = () => {
             <label htmlFor="message">Votre Message</label>
           </div>
 
-          <button type="submit" className="btn-submit" disabled={loading}>
-            {loading ? 'Envoi en cours...' : 'Envoyer le message'} <span>🚀</span>
+          <button type="submit" className="btn-submit">
+            Ouvrir ma messagerie <span>→</span>
           </button>
         </form>
       </div>

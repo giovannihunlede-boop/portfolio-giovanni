@@ -1,11 +1,23 @@
 # Portfolio React - Giovanni
 
-Une migration moderne de votre portfolio en React + TypeScript avec Vite, conservant le design glassmorphism élégant et les démos interactives.
+Portfolio personnel de Giovanni, construit avec React, TypeScript et Vite. Le site présente les compétences, les projets et quatre démos interactives dans une interface glassmorphism responsive.
+
+## État du projet
+
+La migration de la première version est fonctionnelle :
+
+- interface portfolio et navigation par ancres ;
+- sections accueil, à propos, compétences, projets et contact ;
+- démos FlowNote, Snake Game, TaskManager et Calculator ;
+- persistance locale de FlowNote et TaskManager ;
+- build de production Vite validé.
+
+Le front est prêt pour la mise en ligne sur un espace statique. Le contact fonctionne par email et WhatsApp ; une connexion Brevo côté serveur pourra être ajoutée lorsque l'espace d'hébergement proposera un endpoint sécurisé.
 
 ## 🎯 Fonctionnalités
 
 ✅ **FlowNote** - Démo notes intelligente (React component)
-✅ **Contact Form** - Formulaire avec intégration Formspree
+✅ **Contact Form** - Prépare un email avec les informations saisies
 ✅ **Modal Réutilisable** - Component modal propre et accessible
 ✅ **Glassmorphism Design** - Design moderne et fluide
 ✅ **TypeScript** - Type-safe et maintenable
@@ -32,7 +44,7 @@ npm --version
 
 2. **Installer les dépendances**
 ```bash
-cd /home/mr-hunlede/development/portfolio-react
+cd portfolio-react
 npm install
 ```
 
@@ -40,29 +52,18 @@ npm install
 ```bash
 npm run dev
 ```
-Le site ouvrira automatiquement sur `http://localhost:3000`
+Le site sera disponible sur `http://localhost:3000`
 
 4. **Build pour la production**
 ```bash
 npm run build
 ```
 
-## 📝 Configuration Formspree
+## 📮 Contact et Brevo
 
-Pour activer l'envoi d'emails du formulaire de contact :
+Le portfolio étant destiné à un hébergement statique, le formulaire ouvre actuellement la messagerie du visiteur avec un email prérempli. Les liens directs vers WhatsApp et l'adresse `giovannihunlede@gmail.com` restent toujours disponibles.
 
-1. Aller sur [Formspree.io](https://formspree.io)
-2. Créer un compte et un nouveau formulaire
-3. Copier votre **Form ID** (format: `YOUR_FORMSPREE_ID`)
-4. Ouvrir `src/components/ContactForm.tsx`
-5. Remplacer :
-```typescript
-const FORMSPREE_ID = 'f/YOUR_FORMSPREE_ID' // TODO: Update
-```
-Par votre vrai ID, exemple :
-```typescript
-const FORMSPREE_ID = 'f/xyzabc123' 
-```
+Pour utiliser Brevo plus tard, il faudra créer un petit endpoint côté serveur (sans exposer la clé API dans React), puis remplacer l'action `mailto:` du composant `ContactForm`.
 
 ## 📦 Structure du Projet
 
@@ -99,37 +100,12 @@ Modifier dans `src/components/ContactForm.tsx`:
 <p>Lomé TOGO</p>
 ```
 
-## 🔄 Migration des Autres Projets
-
-Pour ajouter les autres démos (Snake, TaskManager, Calculator), créer des composants similaires:
-
-```typescript
-// src/components/SnakeDemoGame.tsx
-import React, { useState } from 'react'
-
-const SnakeDemoGame: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
-  // Game logic here
-  return (
-    <div className={`demo-modal ${isOpen ? 'open' : ''}`} onClick={(e) => e.target === e.currentTarget && onClose()}>
-      {/* Modal content */}
-    </div>
-  )
-}
-
-export default SnakeDemoGame
-```
-
-## 📖 Documentation Formspree
-
-https://formspree.io/docs/
-
 ## 🛠️ Technologies Utilisées
 
 - **React 18** - Library UI
 - **TypeScript** - Type safety
 - **Vite** - Build tool ultra-rapide
 - **CSS3** - Glassmorphism + animations
-- **Formspree** - Email backend
 - **localStorage API** - Persistance données
 
 ## 📱 Conseil pour Hébergement
@@ -156,4 +132,4 @@ npm install
 
 ---
 
-**Prochains projets à migrer:** Snake Game, TaskManager, Calculator (même approche avec Canvas/HTML et localStorage)
+**Suite recommandée:** lancer `npm run build`, puis transférer le contenu de `dist/` sur l'espace serveur. Le nom de domaine pourra être relié ensuite via les DNS de l'hébergeur.
