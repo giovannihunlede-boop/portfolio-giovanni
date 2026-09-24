@@ -4,7 +4,7 @@ import SnakeGameDemo from './components/SnakeGameDemo'
 import TaskManagerDemo from './components/TaskManagerDemo'
 import CalculatorDemo from './components/CalculatorDemo'
 import ContactForm from './components/ContactForm'
-import DigiAlertDemo from './components/DigiAlertDemo'
+import NotifyHubModal from './components/NotifyHubModal'
 import { useEffect } from 'react'
 
 function App() {
@@ -12,7 +12,8 @@ function App() {
   const [isSnakeOpen, setIsSnakeOpen] = useState(false)
   const [isTaskManagerOpen, setIsTaskManagerOpen] = useState(false)
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false)
-  const [isDigiAlertOpen, setIsDigiAlertOpen] = useState(false)
+  const [isNotifyHubOpen, setIsNotifyHubOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLightMode, setIsLightMode] = useState(() => {
     return localStorage.getItem('theme') === 'light'
   })
@@ -74,29 +75,42 @@ function App() {
     },
     {
       id: 5,
-      title: "Mini DigiAlert - App de Notification",
-      description: "Application de notification en temps réel avec support des canaux de communication multiples.",
-      technologies: ["React", "TypeScript", "WebSocket", "Node.js"],
-      image: "/images/digialert.png",
-      setDemoState: setIsDigiAlertOpen,
-    }
+      title: "NotifyHub - Système de Notifications",
+      description:
+        "Tableau de gestion des relances avec recherche, filtres, suivi des statuts et notifications multicanales.",
+      technologies: [
+        "React",
+        "TypeScript",
+        "Tailwind CSS",
+        "localStorage",
+      ],
+      image: "/images/notifyhub.png",
+      setDemoState: setIsNotifyHubOpen,
+    },
   ];
 
   return (
     <>
       <div id="glow-cursor" className="glow-cursor"></div>
       {/* Header */}
-      <header >
+      <header>
         <h2 className="nom">Giovanni</h2>
-        <nav className="liens">
-          <a href="#accueil">Accueil</a>
-          <a href="#apropos">À Propos</a>
-          <a href="#competences">Compétences</a>
-          <a href="#projets">Projets</a>
-          <a href="#contact">Contact</a>
+        <button 
+          className="mobile-menu-btn" 
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Menu"
+        >
+          {isMenuOpen ? '✖' : '☰'}
+        </button>
+        <nav className={`liens ${isMenuOpen ? 'open' : ''}`}>
+          <a href="#accueil" onClick={() => setIsMenuOpen(false)}>Accueil</a>
+          <a href="#apropos" onClick={() => setIsMenuOpen(false)}>À Propos</a>
+          <a href="#competences" onClick={() => setIsMenuOpen(false)}>Compétences</a>
+          <a href="#projets" onClick={() => setIsMenuOpen(false)}>Projets</a>
+          <a href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</a>
           <button 
             className="theme-toggle" 
-            onClick={() => setIsLightMode(!isLightMode)}
+            onClick={() => { setIsLightMode(!isLightMode); setIsMenuOpen(false); }}
             title="Changer de thème"
           >
             {isLightMode ? '🌙' : '☀️'}
@@ -114,6 +128,21 @@ function App() {
                 <em>Salut, </em> je suis <br />
                 <strong>Giovanni</strong>
               </h3>
+
+              {/* PHOTO MOBILE */}
+              <div className="hero-visual hero-visual-mobile">
+                <div className="hero-image-frame">
+                  <img
+                    className="image"
+                    src="/images/giovanni.png"
+                    alt="Giovanni"
+                  />
+                </div>
+
+                <div className="hero-orbit hero-orbit-one"></div>
+                <div className="hero-orbit hero-orbit-two"></div>
+              </div>
+
               <fieldset className="hero-fieldset">
                 <legend className='word'>Développeur full-stack & concepteur d&apos;expériences UI/UX</legend>
                 <p className="hero-description">
@@ -368,8 +397,9 @@ function App() {
 
       {/* CALCULATOR MODAL */}
       <CalculatorDemo isOpen={isCalculatorOpen} onClose={() => setIsCalculatorOpen(false)} />
-      {/* DIGIALERT MODAL */}
-      <DigiAlertDemo isOpen={isDigiAlertOpen} onClose={() => setIsDigiAlertOpen(false)} />
+
+      {/* NOTIFYHUB MODAL */}
+      <NotifyHubModal isOpen={isNotifyHubOpen} onClose={() => setIsNotifyHubOpen(false)} />
     </>
   )
 }

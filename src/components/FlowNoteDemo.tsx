@@ -23,7 +23,6 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isDarkMode, setIsDarkMode] = useState(true);
 
-  // Charger les notes
   useEffect(() => {
     const stored = localStorage.getItem('demoFlowNotes');
     if (stored) {
@@ -31,7 +30,6 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
     }
   }, []);
 
-  // Sauvegarder les notes
   const saveNotes = (newNotes: Note[]) => {
     setNotes(newNotes);
     localStorage.setItem('demoFlowNotes', JSON.stringify(newNotes));
@@ -69,19 +67,17 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
       setTitle(note.title);
       setContent(note.content);
       setCategory(note.category);
-      // Supprime l'ancienne note pour la remplacer lors du prochain "Ajouter"
       saveNotes(notes.filter((n) => n.id !== id)); 
     }
   };
 
-  // Couleurs dynamiques pour les catégories (adaptées à ton thème)
   const getCategoryColor = (cat: string) => {
     const colors: Record<string, string> = {
-      work: '#FF6B6B',      // Rouge doux
-      personal: '#4ECDC4',  // Menthe
-      ideas: '#FFE66D',     // Jaune
-      important: '#ff006e', // Rose Néon
-      general: '#00d9ff',   // Cyan Néon
+      work: '#FF6B6B',      
+      personal: '#4ECDC4',  
+      ideas: '#FFE66D',     
+      important: '#ff006e', 
+      general: '#00d9ff',   
     };
     return colors[cat] || '#00d9ff';
   };
@@ -99,15 +95,24 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
   return (
     <>
       <style>{`
+        /* ============================ */
+        /* VARIABLES & BASE             */
+        /* ============================ */
         .fn-overlay {
           position: fixed;
           top: 0; left: 0; width: 100vw; height: 100vh;
           background: ${isDarkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.4)'};
           backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
           display: flex; justify-content: center; align-items: center;
           z-index: 1000;
           padding: 20px;
           animation: fadeIn 0.3s forwards;
+          box-sizing: border-box;
+        }
+
+        .fn-overlay * {
+          box-sizing: border-box;
         }
 
         .fn-wrapper {
@@ -119,24 +124,27 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
           width: 100%; max-width: 850px;
           max-height: 90vh;
           display: flex; flex-direction: column;
-          overflow: hidden; /* Empêche le contenu de dépasser les bords arrondis */
+          overflow: hidden;
           transform: translateY(20px);
           animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
           color: ${isDarkMode ? '#ffffff' : '#1e1e1e'};
         }
 
+        /* ============================ */
+        /* HEADER                       */
+        /* ============================ */
         .fn-header {
           display: flex; 
           justify-content: space-between; 
           align-items: center;
           padding: 24px 24px 10px 24px;
           background: transparent !important;
-          border-bottom: none !important; /* Enlève la ligne de séparation */
+          flex-shrink: 0;
         }
 
         .fn-title-container {
           text-align: center;
-          flex-grow: 1; /* Pousse les boutons sur les côtés */
+          flex-grow: 1;
         }
 
         .fn-header h2 {
@@ -161,7 +169,7 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
           cursor: pointer; 
           color: inherit; 
           transition: transform 0.2s;
-          width: 40px; /* Équilibre parfait gauche/droite */
+          width: 40px;
           display: flex;
           justify-content: center;
         }
@@ -169,18 +177,16 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
         .fn-close:hover, .fn-theme-btn:hover { 
           transform: scale(1.1); 
         }
-        
-        .fn-close {
-          position: absolute; top: 20px; right: 20px;
-        }
 
+        /* ============================ */
+        /* BODY & FORM                  */
+        /* ============================ */
         .fn-body {
           padding: 24px;
-          overflow-y: auto; /* Scroll uniquement dans le corps */
+          overflow-y: auto;
           display: flex; flex-direction: column; gap: 24px;
         }
 
-        /* Formulaire */
         .fn-input-group {
           background: ${isDarkMode ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)'};
           border: 1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
@@ -214,13 +220,16 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
           color: white; border: none; border-radius: 10px;
           padding: 12px 24px; font-weight: bold; cursor: pointer;
           transition: 0.3s; white-space: nowrap;
+          flex-shrink: 0;
         }
         .fn-btn-add:hover {
           transform: translateY(-2px);
           box-shadow: 0 5px 15px rgba(0, 217, 255, 0.4);
         }
 
-        /* Filtres */
+        /* ============================ */
+        /* FILTERS                      */
+        /* ============================ */
         .fn-filters {
           display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
         }
@@ -229,7 +238,9 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
           color: ${isDarkMode ? '#00d9ff' : '#007a99'};
         }
 
-        /* Grille de notes */
+        /* ============================ */
+        /* GRID & CARDS                 */
+        /* ============================ */
         .fn-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -240,7 +251,7 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
           background: ${isDarkMode ? 'rgba(255,255,255,0.05)' : '#ffffff'};
           border: 1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
           border-radius: 12px; padding: 16px;
-          border-left: 5px solid; /* Couleur gérée en inline */
+          border-left: 5px solid;
           display: flex; flex-direction: column; gap: 10px;
           transition: 0.3s; position: relative;
         }
@@ -251,19 +262,22 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
 
         .fn-card-header {
           display: flex; justify-content: space-between; align-items: flex-start;
+          gap: 10px;
         }
         .fn-card-title {
           margin: 0; font-size: 1.1rem; font-weight: 700;
+          word-break: break-word;
         }
         .fn-badge {
           font-size: 0.75rem; padding: 4px 8px; border-radius: 20px;
           color: #1e1e1e; font-weight: bold; text-transform: uppercase;
+          white-space: nowrap;
         }
 
         .fn-card-content {
           margin: 0; font-size: 0.95rem; line-height: 1.5;
           color: ${isDarkMode ? '#d1d1e0' : '#444'};
-          flex-grow: 1; white-space: pre-wrap;
+          flex-grow: 1; white-space: pre-wrap; word-break: break-word;
         }
 
         .fn-card-footer {
@@ -287,22 +301,73 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
           grid-column: 1 / -1;
         }
 
+        /* ============================ */
+        /* ANIMATIONS & SCROLLBAR       */
+        /* ============================ */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
         
-        /* Personnalisation de la scrollbar pour le style Pro */
         .fn-body::-webkit-scrollbar { width: 8px; }
         .fn-body::-webkit-scrollbar-track { background: transparent; }
         .fn-body::-webkit-scrollbar-thumb { background: rgba(0, 217, 255, 0.3); border-radius: 10px; }
         .fn-body::-webkit-scrollbar-thumb:hover { background: rgba(0, 217, 255, 0.6); }
+
+        /* ============================ */
+        /* MEDIA QUERIES (RESPONSIVE)   */
+        /* ============================ */
+        @media (max-width: 768px) {
+          .fn-overlay {
+            padding: 10px; 
+          }
+          .fn-wrapper {
+            max-height: 95vh; /* Plus grand sur mobile */
+            border-radius: 16px;
+          }
+          .fn-header {
+            padding: 16px 16px 8px 16px;
+          }
+          .fn-header h2 {
+            font-size: 1.25rem;
+          }
+          .fn-body {
+            padding: 16px;
+            gap: 20px;
+          }
+          .fn-row {
+            flex-direction: column; /* Superpose le Select et le Bouton Ajouter */
+          }
+          .fn-btn-add {
+            width: 100%; /* Bouton pleine largeur */
+            padding: 14px; /* Un peu plus haut pour le tactile */
+          }
+          .fn-filters {
+            flex-direction: column; /* Superpose les filtres */
+            align-items: stretch;
+          }
+          .fn-filters .fn-input, .fn-filters .fn-select {
+            width: 100% !important; /* Force la pleine largeur */
+          }
+          .fn-stats {
+            text-align: center;
+            margin-top: 4px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .fn-grid {
+            /* Force 1 seule colonne sur très petits écrans pour éviter le débordement */
+            grid-template-columns: 1fr;
+          }
+          .fn-card-header {
+            flex-direction: column; /* Superpose Titre et Badge si l'écran est minuscule */
+            gap: 6px;
+          }
+        }
       `}</style>
 
       <div className="fn-overlay" onClick={onClose}>
         <div className="fn-wrapper" onClick={(e) => e.stopPropagation()}>
           
-          
-          
-
           <div className="fn-header">
             <button className="fn-theme-btn" onClick={() => setIsDarkMode(!isDarkMode)} title="Changer de thème">
               {isDarkMode ? '☀️' : '🌙'}
@@ -313,12 +378,11 @@ const FlowNoteDemo: React.FC<FlowNoteDemoProps> = ({ isOpen, onClose }) => {
               <p>Sauvegarde locale · Démo interactive</p>
             </div>
 
+            {/* J'ai repositionné le bouton fermer pour éviter qu'il soit en absolu et chevauche le contenu sur mobile */}
             <button className="fn-close" onClick={onClose} title="Fermer">
               ✖
             </button>
           </div>
-
-          
 
           <div className="fn-body">
             {/* Section Ajout */}

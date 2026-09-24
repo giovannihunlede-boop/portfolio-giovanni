@@ -21,7 +21,7 @@ const SnakeGameDemo: React.FC<SnakeGameDemoProps> = ({ isOpen, onClose }) => {
     gameOver: false,
     width: 12,
     height: 12,
-    cellSize: 25, // Taille ajustée pour un meilleur rendu mobile/PC
+    cellSize: 25, 
   });
 
   const setDirection = useCallback((dx: number, dy: number) => {
@@ -35,7 +35,7 @@ const SnakeGameDemo: React.FC<SnakeGameDemoProps> = ({ isOpen, onClose }) => {
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-        e.preventDefault(); // Empêche le scroll de la page
+        e.preventDefault(); 
       }
       if (e.key === 'ArrowUp') setDirection(0, -1);
       else if (e.key === 'ArrowDown') setDirection(0, 1);
@@ -57,21 +57,20 @@ const SnakeGameDemo: React.FC<SnakeGameDemoProps> = ({ isOpen, onClose }) => {
     const state = gameStateRef.current;
 
     const gameLoop = setInterval(() => {
-      // Mise à jour de la position
       state.direction = state.nextDir;
       const head = {
         x: state.snake[0].x + state.direction.x,
         y: state.snake[0].y + state.direction.y,
       };
 
-      // Collisions (Murs)
+      // Collisions Murs
       if (head.x < 0 || head.x >= state.width || head.y < 0 || head.y >= state.height) {
         setGameOver(true);
         clearInterval(gameLoop);
         return;
       }
 
-      // Collisions (Soi-même)
+      // Collisions Soi-même
       if (state.snake.some((s) => s.x === head.x && s.y === head.y)) {
         setGameOver(true);
         clearInterval(gameLoop);
@@ -93,15 +92,15 @@ const SnakeGameDemo: React.FC<SnakeGameDemoProps> = ({ isOpen, onClose }) => {
       }
 
       // Dessin
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // Fond transparent géré par le CSS
+      ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
-      // Dessiner la pomme (Néon Rose)
+      // Pomme
       ctx.fillStyle = '#ff006e';
       ctx.shadowBlur = 10;
       ctx.shadowColor = '#ff006e';
       ctx.fillRect(state.food.x * state.cellSize, state.food.y * state.cellSize, state.cellSize - 1, state.cellSize - 1);
 
-      // Dessiner le serpent (Néon Cyan)
+      // Serpent
       ctx.fillStyle = '#00d9ff';
       ctx.shadowBlur = 8;
       ctx.shadowColor = '#00d9ff';
@@ -109,7 +108,7 @@ const SnakeGameDemo: React.FC<SnakeGameDemoProps> = ({ isOpen, onClose }) => {
         ctx.fillRect(s.x * state.cellSize, s.y * state.cellSize, state.cellSize - 1, state.cellSize - 1);
       });
       
-      ctx.shadowBlur = 0; // Reset pour le prochain rendu
+      ctx.shadowBlur = 0; 
 
     }, 150);
 
@@ -138,12 +137,22 @@ const SnakeGameDemo: React.FC<SnakeGameDemoProps> = ({ isOpen, onClose }) => {
   return (
     <>
       <style>{`
+        /* ============================ */
+        /* VARIABLES & BASE             */
+        /* ============================ */
         .sg-overlay {
           position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
           background: ${isDarkMode ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.4)'};
           backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
           display: flex; justify-content: center; align-items: center;
           z-index: 1000; opacity: 0; animation: fadeIn 0.3s forwards;
+          padding: 16px;
+          box-sizing: border-box;
+        }
+
+        .sg-overlay * {
+          box-sizing: border-box;
         }
 
         .sg-wrapper {
@@ -152,14 +161,17 @@ const SnakeGameDemo: React.FC<SnakeGameDemoProps> = ({ isOpen, onClose }) => {
           box-shadow: 0 25px 50px -12px ${isDarkMode ? 'rgba(0,0,0,0.5)' : 'rgba(0, 217, 255, 0.15)'};
           border-radius: 24px;
           padding: 0 0 24px 0;
-          width: 90%; max-width: 400px;
+          width: 100%; max-width: 420px; /* Légèrement élargi pour un beau layout */
+          max-height: 95vh;
+          overflow-y: auto;
           transform: translateY(20px);
           animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
           color: ${isDarkMode ? '#ffffff' : '#1e1e1e'};
-          overflow: hidden;
         }
 
-        /* En-tête standardisé (Calculatrice, FlowNote, Snake) */
+        /* ============================ */
+        /* HEADER                       */
+        /* ============================ */
         .sg-header {
           display: flex; justify-content: space-between; align-items: center;
           padding: 24px 24px 10px 24px;
@@ -185,7 +197,9 @@ const SnakeGameDemo: React.FC<SnakeGameDemoProps> = ({ isOpen, onClose }) => {
         }
         .sg-close:hover, .sg-theme-btn:hover { transform: scale(1.1); }
 
-        /* Contenu du jeu */
+        /* ============================ */
+        /* MAIN & GAME                  */
+        /* ============================ */
         .sg-main {
           display: flex; flex-direction: column; align-items: center;
           padding: 10px 24px;
@@ -194,15 +208,30 @@ const SnakeGameDemo: React.FC<SnakeGameDemoProps> = ({ isOpen, onClose }) => {
         .sg-score {
           font-size: 1.2rem; font-weight: 800; margin-bottom: 15px;
           color: ${isDarkMode ? '#00d9ff' : '#007a99'};
+          text-align: center;
         }
         .sg-score.over { color: #ff006e; }
 
+        /* Conteneur Canvas Responsive */
         .sg-canvas-container {
+          width: 100%;
+          max-width: 300px; /* Limite la taille max sur PC */
+          aspect-ratio: 1 / 1; /* Garde toujours un carré parfait */
           background: ${isDarkMode ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.05)'};
           border: 2px solid ${isDarkMode ? 'rgba(0, 217, 255, 0.4)' : 'rgba(255, 0, 110, 0.4)'};
           border-radius: 12px;
           box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
           overflow: hidden;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        /* Canvas s'adapte à son conteneur CSS */
+        .sg-canvas {
+          width: 100%;
+          height: 100%;
+          display: block;
         }
 
         .sg-btn-primary {
@@ -212,33 +241,77 @@ const SnakeGameDemo: React.FC<SnakeGameDemoProps> = ({ isOpen, onClose }) => {
           font-weight: 700; font-size: 1.1rem;
           cursor: pointer; transition: 0.3s;
           box-shadow: 0 4px 15px rgba(255, 0, 110, 0.3);
+          width: 100%; max-width: 250px;
+          text-align: center;
         }
-        .sg-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 0, 110, 0.5); }
+        .sg-btn-primary:hover { 
+          transform: translateY(-2px); 
+          box-shadow: 0 6px 20px rgba(255, 0, 110, 0.5); 
+        }
 
-        /* D-PAD (Contrôles Mobiles) */
+        /* ============================ */
+        /* D-PAD (CSS GRID - Mobile)    */
+        /* ============================ */
         .sg-dpad {
-          display: flex; flex-direction: column; align-items: center;
-          gap: 8px; margin-top: 20px;
+          display: grid;
+          grid-template-columns: repeat(3, 56px);
+          grid-template-rows: repeat(3, 56px);
+          gap: 10px;
+          margin-top: 24px;
+          justify-content: center;
+          /* Important pour l'expérience mobile (évite zoom/scroll involontaire) */
+          touch-action: manipulation;
+          user-select: none;
+          -webkit-user-select: none;
         }
-        .sg-dpad-row {
-          display: flex; gap: 40px; /* Espace au centre pour la flèche bas */
-        }
+        
         .sg-dpad-btn {
-          width: 50px; height: 50px;
-          background: ${isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'};
-          border: 1px solid ${isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
-          border-radius: 12px; font-size: 1.5rem;
+          background: ${isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)'};
+          border: 1px solid ${isDarkMode ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)'};
+          border-radius: 16px; font-size: 1.8rem;
           display: flex; justify-content: center; align-items: center;
           cursor: pointer; color: ${isDarkMode ? 'white' : 'black'};
-          transition: 0.2s;
+          transition: background 0.1s, transform 0.1s;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+        
         .sg-dpad-btn:active {
-          background: ${isDarkMode ? 'rgba(0, 217, 255, 0.3)' : 'rgba(255, 0, 110, 0.2)'};
-          transform: scale(0.95);
+          background: ${isDarkMode ? 'rgba(0, 217, 255, 0.4)' : 'rgba(255, 0, 110, 0.3)'};
+          transform: scale(0.92);
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
+
+        /* Placement dans la grille */
+        .btn-up { grid-column: 2; grid-row: 1; }
+        .btn-left { grid-column: 1; grid-row: 2; }
+        .btn-right { grid-column: 3; grid-row: 2; }
+        .btn-down { grid-column: 2; grid-row: 3; }
 
         @keyframes fadeIn { to { opacity: 1; } }
         @keyframes slideUp { to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        /* ============================ */
+        /* MEDIA QUERIES                */
+        /* ============================ */
+        @media (max-width: 480px) {
+          .sg-header {
+            padding: 16px 16px 8px 16px;
+          }
+          .sg-header h2 {
+            font-size: 1.25rem;
+          }
+          .sg-main {
+            padding: 10px 16px;
+          }
+          .sg-dpad {
+            grid-template-columns: repeat(3, 60px); /* Boutons légèrement plus larges pour les doigts */
+            grid-template-rows: repeat(3, 60px);
+            gap: 12px;
+          }
+          .sg-wrapper {
+            border-radius: 20px;
+          }
+        }
       `}</style>
 
       <div className="sg-overlay" onClick={onClose}>
@@ -269,24 +342,23 @@ const SnakeGameDemo: React.FC<SnakeGameDemoProps> = ({ isOpen, onClose }) => {
             ) : (
               <>
                 <div className="sg-canvas-container">
-                  <canvas ref={canvasRef} width={300} height={300} />
+                  {/* La résolution logique reste 300x300, mais le CSS gère l'affichage flexible */}
+                  <canvas ref={canvasRef} width={300} height={300} className="sg-canvas" />
                 </div>
                 
                 {gameOver && (
                   <button className="sg-btn-primary" onClick={startGame}>
-                     Rejouer
+                    Rejouer
                   </button>
                 )}
 
-                {/* Contrôles tactiles (D-Pad) visibles uniquement si le jeu est en cours */}
+                {/* Contrôles tactiles repensés en CSS Grid */}
                 {!gameOver && (
                   <div className="sg-dpad">
-                    <button className="sg-dpad-btn" onClick={() => setDirection(0, -1)}>⬆️</button>
-                    <div className="sg-dpad-row">
-                      <button className="sg-dpad-btn" onClick={() => setDirection(-1, 0)}>⬅️</button>
-                      <button className="sg-dpad-btn" onClick={() => setDirection(1, 0)}>➡️</button>
-                    </div>
-                    <button className="sg-dpad-btn" onClick={() => setDirection(0, 1)}>⬇️</button>
+                    <button className="sg-dpad-btn btn-up" onClick={() => setDirection(0, -1)}>⬆️</button>
+                    <button className="sg-dpad-btn btn-left" onClick={() => setDirection(-1, 0)}>⬅️</button>
+                    <button className="sg-dpad-btn btn-right" onClick={() => setDirection(1, 0)}>➡️</button>
+                    <button className="sg-dpad-btn btn-down" onClick={() => setDirection(0, 1)}>⬇️</button>
                   </div>
                 )}
               </>
