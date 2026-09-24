@@ -373,8 +373,8 @@ const TaskManagerAdvanced: React.FC<TaskManagerAdvancedProps> = ({ isOpen, onClo
           {/* En-tête */}
           <div className="tm-header">
             <div className="tm-title">
-              <h2>🚀 GTT Workspace</h2>
-              <p>Gestionnaire de tâches avancé</p>
+              <h2>Workspace</h2>
+              <p>Gestionnaire de tâches</p>
             </div>
             <div className="tm-header-actions">
               <button

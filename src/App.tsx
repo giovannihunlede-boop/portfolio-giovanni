@@ -67,9 +67,9 @@ function App() {
     },
     {
       id: 4,
-      title: "TaskManager - React Web App",
-      description: "Application complète de gestion de tâches avec priorités, filtrage, et persistance localStorage.",
-      technologies: ["React", "TypeScript", "State Management", "localStorage"],
+      title: "TaskManager - Workspace",
+      description: "Application complète de gestion de tâches avec suivi de progression globale, filtrage par statut/priorité, catégories et persistance localStorage.",
+      technologies: ["React", "TypeScript", "CSS-in-JS", "localStorage", "Responsive Design"],
       image: "/images/taskmanager.png",
       setDemoState: setIsTaskManagerOpen,
     },
