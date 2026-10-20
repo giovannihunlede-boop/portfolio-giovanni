@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import FlowNoteDemo from './components/FlowNoteDemo'
-import SnakeGameDemo from './components/SnakeGameDemo'
-import TaskManagerDemo from './components/TaskManagerDemo'
-import CalculatorDemo from './components/CalculatorDemo'
-import ContactForm from './components/ContactForm'
-import NotifyHubModal from './components/NotifyHubModal'
-import { useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react';
+import FlowNoteDemo from './components/FlowNoteDemo';
+import SnakeGameDemo from './components/SnakeGameDemo';
+import TaskManagerDemo from './components/TaskManagerDemo';
+import CalculatorDemo from './components/CalculatorDemo';
+import ContactForm from './components/ContactForm';
+import NotifyHubModal from './components/NotifyHubModal';
 
 function App() {
-  const [isFlowNoteOpen, setIsFlowNoteOpen] = useState(false)
-  const [isSnakeOpen, setIsSnakeOpen] = useState(false)
-  const [isTaskManagerOpen, setIsTaskManagerOpen] = useState(false)
-  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false)
-  const [isNotifyHubOpen, setIsNotifyHubOpen] = useState(false)
+  const [isFlowNoteOpen, setIsFlowNoteOpen] = useState(false);
+  const [isSnakeOpen, setIsSnakeOpen] = useState(false);
+  const [isTaskManagerOpen, setIsTaskManagerOpen] = useState(false);
+  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+  const [isNotifyHubOpen, setIsNotifyHubOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLightMode, setIsLightMode] = useState(() => {
-    return localStorage.getItem('theme') === 'light'
-  })
-  useEffect(() => {
-    window.scrollTo(0, 0)
+  
+  // État pour la Lightbox (Image en grand)
+  const [selectedVisual, setSelectedVisual] = useState<string | null>(null);
+  
+  // États pour le Carrousel 3D
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
-    // Logique du Thème
+  const [isLightMode, setIsLightMode] = useState(() => {
+    return localStorage.getItem('theme') === 'light';
+  });
+
+  // Gestion du thème et du curseur magique
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
     if (isLightMode) {
-      document.documentElement.setAttribute('data-theme', 'light')
-      localStorage.setItem('theme', 'light')
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
     } else {
-      document.documentElement.removeAttribute('data-theme')
-      localStorage.setItem('theme', 'dark')
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'dark');
     }
 
-    // Logique du Curseur Magique
     const cursor = document.getElementById('glow-cursor');
     const handleMouseMove = (e: MouseEvent) => {
       if (cursor) {
@@ -39,7 +46,46 @@ function App() {
     
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [isLightMode])
+  }, [isLightMode]);
+
+  // Gestion de l'Auto-Scroll Infini (Le Vrai !)
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let animationFrameId: number;
+
+    // Cette fonction écoute le scroll manuel du visiteur ET l'auto-scroll
+    const handleScroll = () => {
+      const set1 = track.querySelector('#set-1') as HTMLElement;
+      if (!set1) return;
+      
+      // On calcule la taille exacte d'un bloc + l'espace (gap)
+      const jumpPoint = set1.offsetWidth + 30;
+
+      // Dès qu'on atteint la fin du premier bloc, on retourne au début de façon invisible
+      if (track.scrollLeft >= jumpPoint) {
+        track.scrollLeft -= jumpPoint;
+      }
+    };
+
+    track.addEventListener('scroll', handleScroll);
+
+    const autoScroll = () => {
+      if (!isHovered) {
+        track.scrollLeft += 1.5; // Vitesse de défilement automatique
+      }
+      animationFrameId = requestAnimationFrame(autoScroll);
+    };
+
+    animationFrameId = requestAnimationFrame(autoScroll);
+
+    return () => {
+      track.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [isHovered]);
+
   const projects = [
     {
       id: 1,
@@ -68,31 +114,55 @@ function App() {
     {
       id: 4,
       title: "TaskManager - Workspace",
-      description: "Application complète de gestion de tâches avec suivi de progression globale, filtrage par statut/priorité, catégories et persistance localStorage.",
-      technologies: ["React", "TypeScript", "CSS-in-JS", "localStorage", "Responsive Design"],
+      description: "Application complète de gestion de tâches avec suivi de progression globale, filtrage par statut/priorité.",
+      technologies: ["React", "TypeScript", "CSS-in-JS", "localStorage"],
       image: "/images/taskmanager.png",
       setDemoState: setIsTaskManagerOpen,
     },
     {
       id: 5,
       title: "NotifyHub - Système de Notifications",
-      description:
-        "Tableau de gestion des relances avec recherche, filtres, suivi des statuts et notifications multicanales.",
-      technologies: [
-        "React",
-        "TypeScript",
-        "Tailwind CSS",
-        "localStorage",
-      ],
+      description: "Tableau de gestion des relances avec recherche, filtres, suivi des statuts et notifications multicanales.",
+      technologies: ["React", "TypeScript", "Tailwind CSS", "localStorage"],
       image: "/images/notifyhub.png",
       setDemoState: setIsNotifyHubOpen,
     },
   ];
 
+  // --- VISUELS PERSOS (Design) ---
+  const baseVisuals = [
+    { 
+      id: 1, 
+      title: "Design Événementiel", 
+      image: "/images/design-bday.webp" 
+    },
+    { 
+      id: 2, 
+      title: "Campagne Cosmétique", 
+      image: "/images/design-cosmetique.png" 
+    },
+    { 
+      id: 3, 
+      title: "Flyer Restauration", 
+      image: "/images/design-food.png" 
+    },
+    { 
+      id: 4, 
+      title: "Création Social Media", 
+      image: "/images/design-social.png" 
+    },
+    { 
+      id: 5, 
+      title: "Affiche Mode / Éditorial", 
+      image: "/images/design-fashion.png" 
+    }
+  ];
+
   return (
     <>
       <div id="glow-cursor" className="glow-cursor"></div>
-      {/* Header */}
+      
+      {/* HEADER */}
       <header>
         <h2 className="nom">Giovanni</h2>
         <button 
@@ -106,7 +176,8 @@ function App() {
           <a href="#accueil" onClick={() => setIsMenuOpen(false)}>Accueil</a>
           <a href="#apropos" onClick={() => setIsMenuOpen(false)}>À Propos</a>
           <a href="#competences" onClick={() => setIsMenuOpen(false)}>Compétences</a>
-          <a href="#projets" onClick={() => setIsMenuOpen(false)}>Projets</a>
+          <a href="#design" onClick={() => setIsMenuOpen(false)}>Design</a>
+          <a href="#projets" onClick={() => setIsMenuOpen(false)}>Code</a>
           <a href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</a>
           <button 
             className="theme-toggle" 
@@ -123,48 +194,45 @@ function App() {
         <section id="accueil" className="accueil">
           <div className="toftruc">
             <div className="texte">
-              
               <h3>
                 <em>Salut, </em> je suis <br />
                 <strong>Giovanni</strong>
               </h3>
 
-              {/* PHOTO MOBILE */}
               <div className="hero-visual hero-visual-mobile">
                 <div className="hero-image-frame">
-                  <img
-                    className="image"
-                    src="/images/giovanni.png"
-                    alt="Giovanni"
-                  />
+                  <img className="image" src="/images/giovanni.png" alt="Giovanni" />
                 </div>
-
                 <div className="hero-orbit hero-orbit-one"></div>
                 <div className="hero-orbit hero-orbit-two"></div>
               </div>
 
               <fieldset className="hero-fieldset">
-                <legend className='word'>Développeur full-stack & concepteur d&apos;expériences UI/UX</legend>
+                <legend className='word'>Développeur Full-Stack & UI/UX Designer</legend>
                 <p className="hero-description">
-                Je transforme des idées en produits web rapides, élégants et utiles, de la première interface au
-                déploiement.
-              </p>
+                  Je transforme des idées complexes en produits web rapides, élégants et utiles. De la première maquette visuelle au déploiement technique final.
+                </p>
 
-              <p className="hero-status">
-                <span className="hero-status-dot" aria-hidden="true" />
-                Disponible pour des projets web créatifs
-              </p>
+                <p className="hero-status">
+                  <span className="hero-status-dot" aria-hidden="true" />
+                  Disponible pour des missions web & créatives
+                </p>
               </fieldset>
               
               <div className="hero-actions">
-                <button type="button" className="btn-bg" onClick={() => document.getElementById('projets')?.scrollIntoView({ behavior: 'smooth' })}>
-                  <p style={{ margin: 0, fontSize: '1rem', fontWeight: '800', fontFamily: 'Arial, sans-serif', color: '#00d9ff' }}>
-                    Découvrir mes projets
+                <a 
+                  href="/CV_Giovanni.pdf" 
+                  download 
+                  className="btn-bg btn-cv" 
+                  style={{textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #00d9ff 0%, #0369a1 100%)'}}
+                >
+                  <p style={{ margin: 0, fontSize: '1rem', fontWeight: '800', fontFamily: 'Arial, sans-serif', color: '#fff' }}>
+                    Télécharger mon CV
                   </p>
-                </button>
-                <button type="button" className="btn-bg" onClick={() => window.open('https://wa.me/22899256495', '_blank')}>
-                  <p style={{ margin: 0, fontSize: '1rem', fontWeight: '800', fontFamily: 'Arial, sans-serif', color: '#00d9ff' }}>
-                    Me contacter
+                </a>
+                <button type="button" className="btn-bg" onClick={() => document.getElementById('projets')?.scrollIntoView({ behavior: 'smooth' })}>
+                  <p style={{ margin: 0, fontSize: '1rem', fontWeight: '800', fontFamily: 'Arial, sans-serif', color: '#fff' }}>
+                    Découvrir mes projets
                   </p>
                 </button>
               </div>
@@ -178,7 +246,6 @@ function App() {
               </div>
             </div>
           </div>
-          
         </section>
 
         {/* SECTION À PROPOS */}
@@ -186,22 +253,17 @@ function App() {
           <h2>À Propos</h2>
           
           <div className="bento-grid">
-            
-            {/* CARTE 1 : Contexte (Prend 2 colonnes) */}
             <div className="bento-card col-span-2">
-              <h3 className="bento-title">Un peu de contexte</h3>
+              <h3 className="bento-title">Un profil hybride : Code & Design</h3>
               <p>
-                Je suis un développeur full-stack passionné par la création de produits web à grande échelle. 
-                Mon objectif ? Prendre des problèmes complexes et des centaines de cas particuliers, pour les transformer 
-                en une <span className="text-highlight">interface simple et intuitive</span>.
+                En tant que <span className="text-highlight">Développeur Full-Stack et UI/UX Designer indépendant</span>, je fusionne la logique algorithmique avec l'excellence créative du design. 
+                Mon objectif ? Transformer vos idées en identités visuelles percutantes et en applications performantes.
               </p>
               <p>
-                Je crois que chaque ligne de code peut raconter une histoire. Entre <span className="text-highlight">design, logique et imagination</span>, 
-                je crée des interfaces où l'esthétique rencontre la fonctionnalité, tout en gardant une empreinte élégante et minimaliste.
+                Je ne me contente pas de faire du "beau" ou du code basique. Je conçois des interfaces qui <span className="text-highlight">résolvent des problèmes, captent l'attention de vos utilisateurs et fluidifient la navigation</span>.
               </p>
             </div>
 
-            {/* CARTE 2 : Visuel / Vibe (Prend 1 colonne) */}
             <div className="bento-card bento-visual">
               <div className="visual-content">
                 <span className="visual-icon">✨</span>
@@ -210,7 +272,6 @@ function App() {
               </div>
             </div>
 
-            {/* CARTE 3 : Parcours / Timeline (Prend 2 colonnes) */}
             <div className="bento-card col-span-2">
               <h3 className="bento-title">Mon Parcours</h3>
               
@@ -234,22 +295,19 @@ function App() {
                 <div className="timeline-point">
                   <div className="point-dot active"></div>
                   <span className="point-date">Aujourd'hui</span>
-                  <h4 className="point-title">Créateur d'Expériences</h4>
-                  <p className="point-desc">Conception UI/UX et projets complexes.</p>
+                  <h4 className="point-title">Designer & Développeur</h4>
+                  <p className="point-desc">Freelance spécialisé en UI/UX et conception web.</p>
                 </div>
               </div>
             </div>
 
-            {/* CARTE 4 : Passions (Prend 1 colonne) */}
             <div className="bento-card">
               <h3 className="bento-title">Au-delà du code</h3>
               <p>
                 En dehors de mon éditeur de code, je suis un tech nerd à l'affût des dernières innovations. 
-                J'adore le design graphique, le gaming (surtout les jeux avec une belle direction artistique), 
-                et découvrir de nouvelles choses.
+                J'adore le design graphique, le gaming, et le montage vidéo créatif.
               </p>
             </div>
-
           </div>
         </section>
 
@@ -258,7 +316,6 @@ function App() {
           <h2>Mes Compétences</h2>
 
           <div className="skills-grid">
-            {/* FRONTEND */}
             <div className="skill-card cyber-card">
               <div className="skill-header">
                 <span className="skill-icon">🌐</span>
@@ -266,72 +323,114 @@ function App() {
               </div>
               <div className="skill-tags">
                 <span className="tag tag-cyan">HTML5</span>
-                <span className="tag tag-pink">JS</span>
-                <span className="tag tag-cyan">React</span>
-                <span className="tag tag-pink">TypeScript</span>
-                <span className="tag tag-cyan">UI/UX Design</span>
+                <span className="tag tag-pink">JS / React</span>
+                <span className="tag tag-cyan">TypeScript</span>
+                <span className="tag tag-pink">Tailwind CSS</span>
               </div>
             </div>
 
-            {/* BACKEND */}
             <div className="skill-card cyber-card">
               <div className="skill-header">
                 <span className="skill-icon">⚡</span>
                 <h3>Backend & Databases</h3>
               </div>
               <div className="skill-tags">
-                <span className="tag tag-pink">PHP</span>
+                <span className="tag tag-pink">PHP / Node.js</span>
                 <span className="tag tag-cyan">MySQL / PDO</span>
                 <span className="tag tag-pink">API REST</span>
-                <span className="tag tag-cyan">Node.js</span>
-                <span className="tag tag-pink">Architecture MVC</span>
+                <span className="tag tag-cyan">Architecture MVC</span>
               </div>
             </div>
 
-            {/* GAME & SYSTEMS */}
-            <div className="skill-card cyber-card">
-              <div className="skill-header">
-                <span className="skill-icon">🎮</span>
-                <h3>Game & Systems</h3>
-              </div>
-              <div className="skill-tags">
-                <span className="tag tag-cyan">Python</span>
-                <span className="tag tag-pink">Pygame</span>
-                <span className="tag tag-cyan">Java OOP</span>
-                <span className="tag tag-pink">C# .NET</span>
-              </div>
-            </div>
-
-            {/* TOOLS */}
             <div className="skill-card cyber-card">
               <div className="skill-header">
                 <span className="skill-icon">🛠️</span>
-                <h3>Tools & Methodologies</h3>
+                <h3>Tools & Workflow</h3>
               </div>
               <div className="skill-tags">
                 <span className="tag tag-pink">Git & GitHub</span>
                 <span className="tag tag-cyan">VS Code / Cursor</span>
-                <span className="tag tag-pink">Ligne de commande</span>
-                <span className="tag tag-cyan">Figma</span>
-                <span className="tag tag-pink">Heroku / Vercel</span>
+                <span className="tag tag-pink">Figma</span>
+                <span className="tag tag-cyan">Vercel</span>
+              </div>
+            </div>
+
+            {/* CARTE DESIGN */}
+            <div className="skill-card cyber-card">
+              <div className="skill-header">
+                <span className="skill-icon">🎨</span>
+                <h3>Design, UI/UX & Visuel</h3>
+              </div>
+              <div className="skill-tags">
+                <span className="tag tag-pink">Maquettes UI/UX</span>
+                <span className="tag tag-cyan">Direction Artistique</span>
+                <span className="tag tag-pink">Création Visuels Réseaux</span>
+                <span className="tag tag-cyan">Montage Vidéo</span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* SECTION PROJETS */}
+        {/* SECTION PORTFOLIO DESIGN (CARROUSEL 3D INFINI) */}
+        <section id="design" className="section design">
+          <h2>Mon Univers Graphique</h2>
+          <p style={{ color: "var(--text-muted)", marginBottom: "10px", fontSize: "1.1rem" }}>
+            Mes créations UI/UX, visuels et identités de marque. 
+          </p>
+
+          <div className="carousel-3d-wrapper">
+            <div 
+              className="carousel-3d-track"
+              ref={trackRef}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              onTouchStart={() => setIsHovered(true)}
+              onTouchEnd={() => setIsHovered(false)}
+            >
+              {/* BLOC 1 */}
+              <div className="carousel-set" id="set-1">
+                {baseVisuals.map((visuel, index) => (
+                  <div 
+                    key={`set1-${visuel.id}-${index}`} 
+                    className="carousel-3d-item"
+                    onClick={() => setSelectedVisual(visuel.image)}
+                  >
+                    <img src={visuel.image} alt={visuel.title} loading="lazy" />
+                    <div className="item-overlay">
+                      <span>{visuel.title}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* BLOC 2 */}
+              <div className="carousel-set" id="set-2">
+                {baseVisuals.map((visuel, index) => (
+                  <div 
+                    key={`set2-${visuel.id}-${index}`} 
+                    className="carousel-3d-item"
+                    onClick={() => setSelectedVisual(visuel.image)}
+                  >
+                    <img src={visuel.image} alt={visuel.title} loading="lazy" />
+                    <div className="item-overlay">
+                      <span>{visuel.title}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION PROJETS CODE */}
         <section id="projets" className="section projets">
-          <h2>Projets réalisés</h2>
+          <h2>Mes Projets Code</h2>
 
           <div className="projects-grid">
             {projects.map((project) => (
               <div key={project.id} className="project-card">
                 <div className="project-img-container">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="project-img"
-                  />
+                  <img src={project.image} alt={project.title} className="project-img" />
                 </div>
                 
                 <div className="project-content">
@@ -345,10 +444,7 @@ function App() {
                   </div>
 
                   <div className="project-links">
-                    <button
-                      onClick={() => project.setDemoState(true)}
-                      className="btn-projet"
-                    > 
+                    <button onClick={() => project.setDemoState(true)} className="btn-projet"> 
                       Tester maintenant 
                     </button>
                   </div>
@@ -366,42 +462,36 @@ function App() {
       <footer>
         <div className="footer-content">
           <h3 className="nom-footer">Giovanni.</h3>
-          <p>Création d&apos;expériences web modernes et fluides.</p>
+          <p>Développement Web & UI/UX Design.</p>
 
           <div className="social-links">
-            <a href="https://github.com/giovannihunlede-boop" target="_blank" rel="noreferrer">
-              GitHub
-            </a>
-            <a href="https://wa.me/22899256495" target="_blank" rel="noreferrer">
-              WhatsApp
-            </a>
-            <a href="mailto:giovannihunlede@gmail.com">
-              Email
-            </a>
+            <a href="https://github.com/giovannihunlede-boop" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://wa.me/22899256495" target="_blank" rel="noreferrer">WhatsApp</a>
+            <a href="mailto:giovannihunlede@gmail.com">Email</a>
           </div>
         </div>
         <div className="footer-bottom">
           <p>&copy; 2026 Giovanni. Tous droits réservés.</p>
-          <p>Designed by Giovanni</p>
+          <p>Designed & Coded by Giovanni</p>
         </div>
       </footer>
 
-      {/* FLOWNOTE MODAL */}
+      {/* LIGHTBOX MODAL (Quand on clique sur une image 3D) */}
+      {selectedVisual && (
+        <div className="lightbox-overlay" onClick={() => setSelectedVisual(null)}>
+          <button className="lightbox-close" onClick={() => setSelectedVisual(null)}>✖</button>
+          <img src={selectedVisual} alt="Visuel agrandi" onClick={(e) => e.stopPropagation()} />
+        </div>
+      )}
+
+      {/* MODALS DEMOS */}
       <FlowNoteDemo isOpen={isFlowNoteOpen} onClose={() => setIsFlowNoteOpen(false)} />
-
-      {/* SNAKE GAME MODAL */}
       <SnakeGameDemo isOpen={isSnakeOpen} onClose={() => setIsSnakeOpen(false)} />
-
-      {/* TASKMANAGER MODAL */}
       <TaskManagerDemo isOpen={isTaskManagerOpen} onClose={() => setIsTaskManagerOpen(false)} />
-
-      {/* CALCULATOR MODAL */}
       <CalculatorDemo isOpen={isCalculatorOpen} onClose={() => setIsCalculatorOpen(false)} />
-
-      {/* NOTIFYHUB MODAL */}
       <NotifyHubModal isOpen={isNotifyHubOpen} onClose={() => setIsNotifyHubOpen(false)} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
