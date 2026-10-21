@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import FlowNoteDemo from './components/FlowNoteDemo';
 import SnakeGameDemo from './components/SnakeGameDemo';
 import TaskManagerDemo from './components/TaskManagerDemo';
